@@ -16,6 +16,7 @@ import {
   Settings,
   Shield,
   Bot,
+  Network,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -26,7 +27,7 @@ import * as z from "zod"
 import { tradingPartners } from "@/lib/sampleData"
 import { Suspense } from "react"
 
-// routes 配列を更新して、アカウントとブリーフの間に商談検索を追加します
+// routes 配列を更新して、ネットワーク図へのリンクを追加します
 const routes = [
   {
     label: "ホーム",
@@ -49,8 +50,14 @@ const routes = [
   {
     label: "ブリーフ",
     icon: FileText,
-    href: "/brief/777",
+    href: "/briefs",
     color: "text-pink-700",
+  },
+  {
+    label: "関係者ネットワーク",
+    icon: Network,
+    href: "/network/hitachi",
+    color: "text-teal-500",
   },
   {
     label: "戦略ボード",
