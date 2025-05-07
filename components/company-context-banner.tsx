@@ -14,7 +14,7 @@ function CompanyContextContent() {
   const getCompanyColor = (name: string) => {
     switch (name) {
       case "日立製作所":
-        return "bg-[#e60027]/5 border-[#e60027]/20 text-[#e60027]"
+        return "bg-[#0066CC]/5 border-[#0066CC]/20 text-[#0066CC]" // 青系統に変更
       case "NEC":
         return "bg-[#1e22aa]/5 border-[#1e22aa]/20 text-[#1e22aa]"
       case "富士通":

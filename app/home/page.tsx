@@ -48,10 +48,10 @@ export default function HomePage() {
 
       <div className="flex justify-center mb-8">
         <Image
-          src="/grip-logo.svg"
+          src="/grip-logo-compact.png"
           alt="GRIP - Group-integrated Relationship Intelligence Platform"
-          width={500}
-          height={120}
+          width={300}
+          height={70}
           priority
         />
       </div>
