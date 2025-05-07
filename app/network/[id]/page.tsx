@@ -9,8 +9,8 @@ import { CompanyContextBanner } from "@/components/company-context-banner"
 import { Download } from "lucide-react"
 import dynamic from "next/dynamic"
 
-// ForceGraph2Dをクライアントサイドでのみ動的にインポート
-const ForceGraph2D = dynamic(() => import("react-force-graph").then((mod) => mod.ForceGraph2D), {
+// Only import the 2D version to avoid A-Frame dependency issues
+const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-[70vh]">
@@ -87,9 +87,11 @@ export default function NetworkPage() {
     // リンクCSV
     const linkCSV = [
       ["source", "target", "strength"].join(","), // ヘッダー
-      ...graphData.links.map((link) =>
-        [link.source.id || link.source, link.target.id || link.target, link.strength].join(","),
-      ),
+      ...graphData.links.map((link) => {
+        const source = typeof link.source === "object" ? link.source.id : link.source
+        const target = typeof link.target === "object" ? link.target.id : link.target
+        return [source, target, link.strength].join(",")
+      }),
     ].join("\n")
 
     // 両方のCSVを結合
@@ -111,10 +113,13 @@ export default function NetworkPage() {
   }
 
   // グループごとの色を定義
-  const groupColors: Record<string, string> = {
-    MC: "#002B5B", // 当社
-    TP: "#E60027", // 取引先
-    GroupCo: "#00A0E9", // グループ会社
+  const getNodeColor = (node: any) => {
+    const colors = {
+      MC: "#002B5B", // 当社
+      TP: "#E60027", // 取引先
+      GroupCo: "#00A0E9", // グループ会社
+    }
+    return colors[node.group as keyof typeof colors] || "#999"
   }
 
   return (
@@ -135,56 +140,12 @@ export default function NetworkPage() {
               graphData={graphData}
               width={dimensions.width}
               height={dimensions.height}
-              nodeAutoColorBy="group"
-              nodeCanvasObject={(node, ctx, globalScale) => {
-                const label = node.name
-                const fontSize = 12 / globalScale
-                ctx.font = `${fontSize}px Sans-Serif`
-                const textWidth = ctx.measureText(label).width
-                const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.2)
-
-                // ノードの背景色を設定
-                ctx.fillStyle = groupColors[node.group as string] || "#999"
-                ctx.beginPath()
-                ctx.arc(node.x || 0, node.y || 0, 5, 0, 2 * Math.PI)
-                ctx.fill()
-
-                // ホバー時のみラベルを表示
-                if ((node as any).__hover) {
-                  ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
-                  ctx.fillRect(
-                    (node.x || 0) - bckgDimensions[0] / 2,
-                    (node.y || 0) - bckgDimensions[1] / 2 - 10,
-                    bckgDimensions[0],
-                    bckgDimensions[1],
-                  )
-
-                  ctx.textAlign = "center"
-                  ctx.textBaseline = "middle"
-                  ctx.fillStyle = "#000"
-                  ctx.fillText(label, node.x || 0, (node.y || 0) - 10)
-                }
-              }}
-              nodePointerAreaPaint={(node, color, ctx) => {
-                ctx.fillStyle = color
-                ctx.beginPath()
-                ctx.arc(node.x || 0, node.y || 0, 8, 0, 2 * Math.PI)
-                ctx.fill()
-              }}
-              onNodeHover={(node) => {
-                if (graphData) {
-                  setGraphData({
-                    nodes: graphData.nodes.map((n) => ({
-                      ...n,
-                      __hover: n.id === (node?.id || null),
-                    })),
-                    links: graphData.links,
-                  })
-                }
-              }}
-              linkWidth={(link) => (link.strength as number) * 4}
+              nodeLabel="name"
+              nodeColor={getNodeColor}
+              linkWidth={(link) => (link.strength as number) * 3}
               linkColor={() => "#999"}
               cooldownTicks={100}
+              nodeRelSize={6}
             />
           )}
         </CardContent>
