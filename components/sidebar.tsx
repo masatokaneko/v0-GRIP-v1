@@ -8,6 +8,7 @@ import {
   BarChart3,
   Bell,
   Building,
+  Calendar,
   FileText,
   Home,
   Lightbulb,
@@ -27,7 +28,7 @@ import * as z from "zod"
 import { tradingPartners } from "@/lib/sampleData"
 import { Suspense } from "react"
 
-// routes 配列を更新して、ネットワーク図へのリンクを追加します
+// routes 配列を更新して、タイムラインへのリンクを追加します
 const routes = [
   {
     label: "ホーム",
@@ -52,6 +53,12 @@ const routes = [
     icon: FileText,
     href: "/briefs",
     color: "text-pink-700",
+  },
+  {
+    label: "タイムライン",
+    icon: Calendar,
+    href: "/timeline/hitachi",
+    color: "text-cyan-500",
   },
   {
     label: "関係者ネットワーク",
