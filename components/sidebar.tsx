@@ -33,7 +33,7 @@ const routes = [
   {
     label: "ホーム",
     icon: Home,
-    href: "/portal",
+    href: "/home",
     color: "text-sky-500",
   },
   {
